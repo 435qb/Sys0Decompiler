@@ -785,7 +785,7 @@ namespace Sys0Decompiler
 				// Import all SCO files from the output folder.
 				List<string> scoFiles = Directory
 					.EnumerateFiles(scoDir)
-					.Where(file => (file.Length > 12 && file.ToLower().IndexOf("dis") == file.Length - 11) &&
+					.Where(file => (file.Length > 12 && file.ToLower().LastIndexOf("dis") == file.Length - 11) &&
 						file.ToLower().EndsWith(".sco"))
 					.ToList();
 
@@ -903,7 +903,7 @@ namespace Sys0Decompiler
 				fatal_error = !decompileSystemVersion.DecompilePage(codeDirectoryName, curPage);
 			}
 
-			decompileSystemVersion.CloseDecompileDisk();
+            decompileSystemVersion.CloseDecompileDisk();
 		}
 
 		private void BtnDecompileSrcDir_Click(object sender, EventArgs e)

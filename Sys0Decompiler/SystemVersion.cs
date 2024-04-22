@@ -39,7 +39,7 @@ namespace Sys0Decompiler
 		protected SpecialCase specialCase;
 
 		protected FileStream outputStream;
-		protected string curFile;
+        protected string curFile;
 		private int curLineNum;
 		protected string curLine;
 		protected int curColumn;
@@ -567,13 +567,15 @@ namespace Sys0Decompiler
 						continue;
 					}
 				}
-
-				nextChar = parent.CompileOutputEncoding.GetBytes(curLine[i].ToString());
-				
-				foreach(byte b in nextChar)
+				if(curLine[i] != delimeter)
 				{
-					WriteByte(b);
-				}
+                    nextChar = parent.CompileOutputEncoding.GetBytes(curLine[i].ToString());
+
+                    foreach (byte b in nextChar)
+                    {
+                        WriteByte(b);
+                    }
+                }
 
 				if(!escapeNext && curLine[i] == delimeter)
 				{
@@ -746,7 +748,7 @@ namespace Sys0Decompiler
 				curColumn++;
 
 				// Do not write * commands, which have no physical presence in SCO files.
-				if(cmd != '*' && cmd != ';')
+				if(cmd != '*' && cmd != ';' && cmd != '\'' && cmd != '"')
 				{
 					if(cmd > 255)
 					{
@@ -1590,7 +1592,7 @@ namespace Sys0Decompiler
 		{
 			return decompileMode == DecompileModeType.ProcessCode && curLabelAddress >= 0 
 				&& labelAddresses.Count > curLabelAddress;
-		}
+        }
 
 		protected void DGetAndWriteMessage(byte terminator)
 		{
@@ -2110,7 +2112,7 @@ namespace Sys0Decompiler
 			return false;
 		}
 
-		private bool LoadScenario(int pageNum)
+        private bool LoadScenario(int pageNum)
 		{
 			if(pageNum > (dataSector - linkSector) * 128 - 1)
 			{
@@ -2155,7 +2157,7 @@ namespace Sys0Decompiler
 			decompileInput.Position = linkIndex * 2;
 			int startSector = decompileInput.ReadByte();
 			startSector |= decompileInput.ReadByte() << 8;
-			int endSector = decompileInput.ReadByte();
+            int endSector = decompileInput.ReadByte();
 			endSector |= decompileInput.ReadByte() << 8;
 
 			scenarioSize = (endSector - startSector) * 256;
@@ -2177,7 +2179,7 @@ namespace Sys0Decompiler
 
 			scenarioData = new byte[scenarioSize];
 			decompileInput.Position = (startSector - 1) * 256;
-			decompileInput.Read(scenarioData, 0, scenarioSize);
+            decompileInput.Read(scenarioData, 0, scenarioSize);
 
 			return true;
 		}
